@@ -1,0 +1,95 @@
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+
+        <a class="nav-item nav-link active" id="nav-indispensables-tab" data-toggle="tab" href="#nav-indispensables"
+            role="tab" aria-controls="nav-indispensables" aria-selected="true">Indispensables</a>
+
+        <a class="nav-item nav-link" id="nav-conseils-tab" data-toggle="tab" href="#nav-conseils" role="tab"
+            aria-controls="nav-conseils" aria-selected="false">Conseils</a>
+
+    </div>
+</nav>
+
+
+<div class="tab-content mt-4" id="nav-tabContent">
+
+    <div class="tab-pane fade show active" id="nav-indispensables" role="tabpanel"
+        aria-labelledby="nav-indispensables-tab">
+        <div class="row">
+
+
+            <div class="col-md-4 mb-5">
+                <h4 class="ml-n3">Frigo</h4>
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-secondary"
+                        *ngFor="let ast of astuces.indispensable.frigo">
+                        {{ ast }}
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-5">
+                <h4 class="ml-n3">Placards</h4>
+                <ul class="list-group">
+                    <li class=" list-group-item list-group-item-secondary "
+                        *ngFor="let ast of astuces.indispensable.placards">
+                        {{ ast }}
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-5">
+                <h4 class="ml-n3">Ustensils</h4>
+                <ul class="list-group">
+                    <li class=" list-group-item list-group-item-secondary "
+                        *ngFor="let ast of astuces.indispensable.ustensils">
+                        {{ ast }}
+                    </li>
+                </ul>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+    <div class="tab-pane fade" id="nav-conseils" role="tabpanel" aria-labelledby="nav-conseils-tab">
+        <div class="row">
+
+
+            <div class="col-md-4 mb-5">
+                <h4 class="ml-n3">Gain de temps</h4>
+                <ul class="list-group">
+                    <li class=" list-group-item list-group-item-secondary rounded mb-3"
+                        *ngFor="let ast of astuces.conseil.gainDeTemps">
+                        {{ ast }}
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-5">
+                <h4 class="ml-n3">Economies</h4>
+                <ul class="list-group">
+                    <li class=" list-group-item list-group-item-secondary rounded mb-3"
+                        *ngFor="let ast of astuces.conseil.economies">
+                        {{ ast }}
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-5">
+                <h4 class="ml-n3">Divers</h4>
+                <ul class="list-group">
+                    <li class=" list-group-item list-group-item-secondary rounded mb-3"
+                        *ngFor="let ast of astuces.conseil.divers">
+                        {{ ast }}
+                    </li>
+                </ul>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>

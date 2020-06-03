@@ -1,0 +1,27 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary mb-4">
+    <a class="navbar-brand" routerLink="/accueil">
+        <img src="../../assets/recipes.png" alt="">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto">
+            <a class="nav-item nav-link" routerLink="/accueil" routerLinkActive="active">Accueil</a>
+            <a class="nav-item nav-link" routerLink="/astuce" routerLinkActive="active">Astuce</a>
+            <a *ngIf="isLoggedIn" class="nav-item nav-link" routerLink="/nouvelleRecette"
+                routerLinkActive="active">Nouvelle recette</a>
+        </div>
+
+
+        <div class="navbar-nav">
+            <button *ngIf="!isLoggedIn" class="btn btn-primary" routerLink="/login">Connexion</button>
+            <button *ngIf="isLoggedIn" class="btn btn-primary" (click)="logout()">Déconnexion</button>
+        </div>
+
+    </div>
+
+
+</nav>

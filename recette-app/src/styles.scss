@@ -1,0 +1,38 @@
+/* You can add global styles to this file, and also import other style files */
+
+$theme-colors: (
+    "primary": #A3D0FF,
+    "danger": #E74C3C
+);
+
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+
+
+.nav-tabs{
+    border-bottom: 1px solid gray("600");
+
+    .nav-link.active {
+        color: gray("200");
+        background-color: theme-color("dark");
+        border-color: gray("600");
+    }
+    .nav-link:hover{
+        border-color: gray("600");
+        color: gray("200");
+    }
+}
+
+.bg-secondary {
+    .card-body, .list-group-item-secondary {
+        color: theme-color("light");
+        // color: #d6d8db;
+        background-color: lighten($color: theme-color("secondary"), $amount: 15);
+    }
+}
+
+
+img {
+    width: inherit;
+}

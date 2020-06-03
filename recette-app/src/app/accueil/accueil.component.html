@@ -1,0 +1,5 @@
+
+<h3>Liste des recettes</h3>
+<div *ngFor="let recette of listeRecettes">
+    <a routerLink="/recette/{{ recette.titre }}">{{ recette.titre }}</a>
+</div>

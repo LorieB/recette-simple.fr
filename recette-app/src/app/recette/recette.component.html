@@ -1,0 +1,65 @@
+<div class="row">
+    <div class="col-lg-3">
+        <div class="row">
+
+            <!-- Ingrédients -->
+            <div class="col-md-12 mb-5">
+                <div class="card bg-secondary">
+                    <div class="card-header">
+                        <h2>Ingrédients</h2>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li *ngFor="let ing of recette.ingredients" class="list-group-item list-group-item-secondary">{{ ing.quantite }} {{ ing.unite }} {{ ing.nom }}</li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <!-- Ustensiles -->
+            <div class="col-md-12 mb-5">
+                <div class="card bg-secondary">
+                    <div class="card-header">
+                        <h2>Ustensiles</h2>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li *ngFor="let ust of recette.ustensiles" class="list-group-item list-group-item-secondary">{{ ust }}</li>
+                    </ul>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+    <!-- Recette -->
+    <div class="col-lg-9">
+        <div class="card bg-secondary">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        <img src="{{ cheminImage }}{{ recette.photo }}" alt="photo du plat">
+                    </div>
+
+                    <div class="col">
+                        <h2>{{ recette.titre }}</h2>
+                        <div>
+                            Préparation : <span *ngIf="recette.tempsPreparation.hours != 0">{{ recette.tempsPreparation.hours }} h </span> <span *ngIf="recette.tempsPreparation.minutes != 0">{{ recette.tempsPreparation.minutes }} min</span><br>
+                            <span *ngIf="recette.tempsCuisson.hours != 0 || recette.tempsCuisson.minutes != 0">Cuisson : <span *ngIf="recette.tempsCuisson.hours != 0">{{ recette.tempsCuisson.hours }} h </span> <span *ngIf="recette.tempsCuisson.minutes != 0"> {{ recette.tempsCuisson.minutes }} min </span> <span *ngIf="recette.temperatureCuisson">à {{ recette.temperatureCuisson }} °c</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card-body">
+                <p [innerHTML]="recette.instructions"></p>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>

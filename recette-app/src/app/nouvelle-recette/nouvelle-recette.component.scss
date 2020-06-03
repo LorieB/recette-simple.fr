@@ -1,0 +1,14 @@
+input {
+    &[type=time], &[type=number]{
+    max-width: 6em;
+    }
+
+}
+
+.input-unite {
+    width: 1em;
+}
+
+.supprLigne {
+    padding: 0 5px;
+}
