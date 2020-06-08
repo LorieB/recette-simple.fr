@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
  
 import { Recette } from '../share/recette';
 import { RecetteService } from '../_services/recette.service';
@@ -24,7 +24,6 @@ export class RecetteComponent implements OnInit {
     tempsCuisson: {hours: null, minutes: null}, 
     temperatureCuisson: null, 
     instructions: null, 
-    // etapes: [], 
     ingredients: [], 
     ustensiles: []
   };
@@ -33,8 +32,7 @@ export class RecetteComponent implements OnInit {
 
   constructor(
     private recetteService: RecetteService,
-    private route: ActivatedRoute,
-    // private router: Router
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {

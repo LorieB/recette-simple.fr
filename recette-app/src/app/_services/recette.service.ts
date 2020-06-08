@@ -4,7 +4,8 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
 import { Recette } from '../share/recette';
-import { RECETTE } from '../share/mock-recette';
+
+import { ToasterService } from '../_services/toaster.service';
 
 import { environment } from '../../environments/environment';
 
@@ -16,10 +17,10 @@ import { environment } from '../../environments/environment';
 export class RecetteService {
 
   constructor(
-    private http : HttpClient
+    private http : HttpClient,
+    private toasterService: ToasterService
   ) { }
 
-  recette = RECETTE;
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
@@ -27,18 +28,13 @@ export class RecetteService {
       // TODO: send the error to remote logging infrastructure
       console.error('error'); // log to console instead
       console.error(error); // log to console instead
-  
-      // TODO: better job of transforming error for user consumption
-      // this.log(`${operation} failed: ${error.message}`);
+      this.toasterService.show('danger', error);
   
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };
   }
 
-  // getRecettes(): Recette[] {
-  //   return this.recette;
-  // }
   getRecettes(): Observable<Recette[]> {
     return this.http.get<Recette[]>(environment.serverUrl+'recettes')
     .pipe(
@@ -46,9 +42,6 @@ export class RecetteService {
     );
   }
 
-  // getRecetteOld(titreR: string): Recette {
-  //   return this.recette.find( r => r.titre == titreR );
-  // }
   getRecette(titreR: string): Observable<Recette> {
     return this.http.get<Recette>(environment.serverUrl+'recette/'+titreR)
     .pipe(
@@ -74,6 +67,22 @@ export class RecetteService {
     return this.http.post<FormData>(environment.serverUrl+'upload', data)
     .pipe(
       catchError(this.handleError<FormData>('uploadPhoto'))
+    );
+  }
+
+
+
+  ajoutIngredient(ingredients: [{nom: string, unite: string}]): Observable<any> {
+    return this.http.post<[{nom: string, unite: string}]>(environment.serverUrl+'ajout-ingredient', ingredients)
+    .pipe(
+      catchError(this.handleError<[{nom: string, unite: string}]>('ajoutIngredient'))
+    );
+  }
+
+  ajoutUstensile(ustensiles: [{nom: string}]): Observable<any> {
+    return this.http.post<[{nom: string}]>(environment.serverUrl+'ajout-ustensile', ustensiles)
+    .pipe(
+      catchError(this.handleError<[{nom: string}]>('ajoutUstensile'))
     );
   }
 

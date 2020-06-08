@@ -1,0 +1,108 @@
+<!-- Ajouter ingrédient / ustensile manquant en BDD -->
+<button class="btn btn-primary btn-block dropdown-toggle mb-2" type="button" data-toggle="collapse"
+    data-target="#collapseIngr" aria-expanded="false" aria-controls="collapseIngr">
+    Créer ingrédient
+</button>
+
+<div class="collapse col-md-12" id="collapseIngr">
+
+    <div class=" mb-4">
+        <div class="card bg-secondary">
+            <div class="card-header">
+                <h2>Nouvel ingrédient</h2>
+            </div>
+
+            <form [formGroup]="newIngredientForm" (ngSubmit)="onSubmitIngredient()">
+
+                <div class="card-body">
+                    <div formArrayName="newIngredients">
+                        <div *ngFor="let ingr of newIngredients.controls; let i=index">
+                            <div class="form-row mb-3" [formGroupName]="i">
+
+                                <input type="text" name="nomI" class="form-control col-7" formControlName="nomI"
+                                    placeholder="Nom"
+                                    [class.is-invalid]="newIngredients.controls[i]['controls']['nomI'].invalid && newIngredients.controls[i]['controls']['nomI'].touched">
+
+
+                                <input type="text" name="unite" class="form-control col-4" formControlName="unite"
+                                    placeholder="Unité">
+
+                                <button (click)="supprNewIngredient(i)" type="button"
+                                    class="btn text-warning supprLigne col-1">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <div *ngIf="newIngredients.controls[i]['controls']['nomI'].invalid && newIngredients.controls[i]['controls']['nomI']['errors']['forbiddenName']"
+                                    class="alert alert-danger text-center col">
+                                    Cet ingrédient existe déjà
+                                </div>
+                            </div>
+                        </div>
+
+                        <button (click)="addNewIngredient()" type="button"
+                            class="btn btn-block btn-outline-primary">+</button>
+
+                    </div>
+                    <button type="submit" [disabled]="newIngredientForm.invalid"
+                        class="btn btn-primary btn-lg btn-block mt-4">Ajouter</button>
+                </div>
+
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+<button class="btn btn-primary btn-block dropdown-toggle mb-2" type="button" data-toggle="collapse"
+    data-target="#collapseUst" aria-expanded="false" aria-controls="collapseUst">
+    Créer ustensile
+</button>
+
+<div class="collapse col-md-12" id="collapseUst">
+
+    <div class=" mb-4">
+        <div class="card bg-secondary">
+            <div class="card-header">
+                <h2>Nouvel ustensile</h2>
+            </div>
+
+
+            <form [formGroup]="newUstensileForm" (ngSubmit)="onSubmitUstensile()">
+                <div class="card-body">
+                    <div formArrayName="newUstensiles">
+                        <div *ngFor="let ust of newUstensiles.controls; let i=index">
+                            <div class="form-row mb-3" [formGroupName]="i">
+
+                                <input type="text" name="nomU" class="form-control col-11" formControlName="nomU"
+                                    placeholder="Nom" required
+                                    [class.is-invalid]="newUstensiles.controls[i]['controls']['nomU'].invalid && newUstensiles.controls[i]['controls']['nomU'].touched">
+
+
+                                <button (click)="supprNewUstensile(i)" type="button"
+                                    class="btn text-warning supprLigne col-1">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+
+                                <div *ngIf="newUstensiles.controls[i]['controls']['nomU'].invalid && newUstensiles.controls[i]['controls']['nomU']['errors']['forbiddenName']"
+                                    class="alert alert-danger text-center col">
+                                    Cet ustensile existe déjà
+                                </div>
+                            </div>
+                        </div>
+
+                        <button (click)="addNewUstensile()" type="button"
+                            class="btn btn-block btn-outline-primary">+</button>
+
+                    </div>
+                    <button type="submit" [disabled]="newUstensileForm.invalid"
+                        class="btn btn-primary btn-lg btn-block mt-4">Ajouter</button>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+
+</div>

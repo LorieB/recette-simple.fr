@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Recette } from '../share/recette';
 import { RecetteService } from '../_services/recette.service';
-// import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-accueil',
@@ -11,7 +11,7 @@ import { RecetteService } from '../_services/recette.service';
 })
 export class AccueilComponent implements OnInit {
 
-  listeRecettes: Recette[];
+  listeRecettes = new Array<Recette>();
 
   constructor(
     private recetteService : RecetteService
@@ -22,10 +22,6 @@ export class AccueilComponent implements OnInit {
   }
 
 
-  // getRecettes(): void {
-  //   this.listeRecettes = this.recetteService.getRecettes();
-  //   console.log(this.listeRecettes);
-  // }
   getRecettes(): void {
     this.recetteService.getRecettes().subscribe(recettes => {
       console.log(recettes);
@@ -33,9 +29,17 @@ export class AccueilComponent implements OnInit {
     });
   }
 
-  // ngOnDestroy() {
-  //   // prevent memory leak when component destroyed
-  //   this.subscription.unsubscribe();
-  // }
+
+  filtrerRecette(filtre): Recette[] {
+    return this.listeRecettes.filter(recette => {
+      if (filtre == 'sucre'){
+        return recette.sucre;
+      }
+      else if (filtre == 'sale'){
+        return !recette.sucre;
+      }
+    });
+  }
+
 
 }

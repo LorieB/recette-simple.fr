@@ -1,7 +1,6 @@
 const { authJwt } = require("../middleware");
 const controller = require("../controllers/recette.controller");
 
-// const pathPhoto = 'C:/Users/Moi/code/recette-simple/recette-app/src/assets/photos/';
 const pathPh = require("../config/path.config");
 
 const busboy = require('connect-busboy'); //middleware for form/file upload
@@ -28,5 +27,10 @@ module.exports = function(app, express) {
 
   app.post("/api/ajout-recette", [authJwt.verifyToken], controller.ajouterRecette);
 
-  app.post('/api/upload', controller.upload);
+  app.post('/api/upload', [authJwt.verifyToken], controller.upload);
+
+
+  app.post('/api/ajout-ingredient', [authJwt.verifyToken], controller.ajoutIngredient);
+
+  app.post('/api/ajout-ustensile', [authJwt.verifyToken], controller.ajoutUstensile);
 }

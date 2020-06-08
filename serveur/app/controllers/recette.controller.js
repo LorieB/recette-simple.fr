@@ -9,11 +9,10 @@ const fs = require('fs-extra');       //File System - for file manipulation
 const pathPh = require("../config/path.config");
 
 
-
 //Liste de toutes les recettes
 exports.getRecettes = (req, res) => {
 
-  requette = `SELECT * FROM recette;`;
+  requette = `SELECT * FROM recette `;
 
   sql.query(requette,
     (err, rows) => {
@@ -41,14 +40,9 @@ exports.getRecetteByTitre = (req, res) => {
     `INNER JOIN ustensile ON ust_recette.id_ustensile = ustensile.id ` +
     `WHERE titre = '${req.params.titre}' ; `;
 
-console.log(requette);
-
   sql.query(requette,
     (err, rows) => {
       if (err) throw err;
-
-      // console.log(req.params.titre);
-      console.log(rows);
 
       tmp = rows[0].tempsPreparation.split(':');
       rows[0].tempsPreparation = { hours: +tmp[0], minutes: +tmp[1] };
@@ -62,7 +56,6 @@ console.log(requette);
       rows[0].ingredients = JSON.parse('[{' + rows[0].ingredients + '}]');
 
       rows[0].ustensiles = rows[0].ustensiles.split(',');
-      // console.log(rows);
 
       res.status(200).send(rows[0]);
     })
@@ -164,13 +157,60 @@ exports.getIngrUst = (req, res) => {
     (err, rows) => {
       if (err) throw err;
 
-      // console.log(rows);
-
       res.status(200).send({
         ingredients: rows[0],
         ustensiles: rows[1]
       });
     })
+}
+
+
+
+exports.ajoutIngredient = (req, res) => {
+  requette = `INSERT INTO ingredient (nom, unite) VALUES `;
+  
+
+  req.body.newIngredients.forEach(ingr => {
+    //Echappe \ puis '
+    ingr.nomI = ingr.nomI.replace(/\\/g, '\\\\');
+    ingr.nomI = ingr.nomI.replace(/'/g, "\\'");
+    ingr.unite = ingr.unite.replace(/\\/g, '\\\\');
+    ingr.unite = ingr.unite.replace(/'/g, "\\'");
+    requette += `('${ingr.nomI}', '${ingr.unite}'),`;
+  });
+  requette = requette.slice(0, requette.length -1);
+
+  console.log(requette);
+
+  sql.query(requette,
+    (err, rows) => {
+      if (err) throw err;
+
+      res.status(200).send({msg: 'Ingrédients ajoutés'});
+    })
+
+}
+
+exports.ajoutUstensile = (req, res) => {
+  requette = `INSERT INTO ustensile (nom) VALUES `;
+  
+  req.body.newUstensiles.forEach(ust => {
+    //Echappe \ puis '
+    ust.nomU = ust.nomU.replace(/\\/g, '\\\\');
+    ust.nomU = ust.nomU.replace(/'/g, "\\'");
+    requette += `('${ust.nomU}'),`;
+  });
+  requette = requette.slice(0, requette.length -1);
+
+  console.log(requette);
+
+  sql.query(requette,
+    (err, rows) => {
+      if (err) throw err;
+
+      res.status(200).send({msg: 'Ustensiles ajoutés'});
+    })
+
 }
 
 

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormArray, FormGroup, Validators, FormControl } from '@angular/forms';
 import { RecetteService } from '../_services/recette.service';
+import { ToasterService } from '../_services/toaster.service';
 
 @Component({
   selector: 'app-nouvelle-recette',
@@ -42,13 +43,16 @@ export class NouvelleRecetteComponent implements OnInit {
 
   constructor(
     public fb: FormBuilder,
-    public recetteService: RecetteService
+    public recetteService: RecetteService,
+    private toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
-    //Liste Ingredients et Ustensiles
+    this.getIngrUst();
+  }
+
+  getIngrUst(): void {
     this.recetteService.getIngrUst().subscribe(liste => {
-      // console.log(liste);
       this.listeIngredients = liste.ingredients;
       this.listeUstensiles = liste.ustensiles;
     })
@@ -121,20 +125,20 @@ export class NouvelleRecetteComponent implements OnInit {
     this.etapes.removeAt(i);
   }
 
- 
+
   onSubmit(): void {
     console.log(this.recetteForm.value);
 
     this.recetteService.ajouterRecette(this.recetteForm.value).subscribe(response => {
       console.log('Response ajout recette');
       console.log(response);
-      alert(response.msg);
+      this.toasterService.show('success', response.msg);
     });
 
     this.recetteService.uploadPhoto(this.formData).subscribe(response => {
       console.log('Response upload image');
       console.log(response);
-      alert(response.msg);
+      this.toasterService.show('success', response.msg);
     });
   }
 }

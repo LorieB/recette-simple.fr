@@ -1,10 +1,13 @@
+<app-toaster-container></app-toaster-container>
+
+
 <form [formGroup]="recetteForm" (ngSubmit)="onSubmit()">
     <div class="row">
         <div class="col-lg-3">
             <div class="row">
 
                 <!-- Ingrédients -->
-                <div class="col-md-12 mb-5">
+                <div class="col-md-12 mb-4">
                     <div class="card bg-secondary">
                         <div class="card-header">
                             <h2>Ingrédients</h2>
@@ -16,16 +19,20 @@
                                 <div *ngFor="let ingredient of ingredients.controls; let i=index">
                                     <div class="form-row mb-3" [formGroupName]="i">
 
-                                        <select (change)="onIngrSelect($event, i)" class="form-control col mr-2" formControlName="id" required
-                                        [class.is-invalid]="ingredients.controls[i]['controls']['id'].invalid && ingredients.controls[i]['controls']['id'].touched">
+                                        <select (change)="onIngrSelect($event, i)" class="form-control col-5 mr-2"
+                                            formControlName="id" required
+                                            [class.is-invalid]="ingredients.controls[i]['controls']['id'].invalid && ingredients.controls[i]['controls']['id'].touched">
                                             <option disabled></option>
-                                            <option *ngFor="let ingr of listeIngredients" value="{{ingr.id}}" [attr.data-unite]="ingr.unite">{{ ingr.nom }}</option>
+                                            <option *ngFor="let ingr of listeIngredients" value="{{ingr.id}}"
+                                                [attr.data-unite]="ingr.unite">{{ ingr.nom }}</option>
                                         </select>
 
-                                        <input type="number" id="quantite" class="form-control col mr-1" step="5" formControlName="quantite" required
-                                        [class.is-invalid]="ingredients.controls[i]['controls']['quantite'].invalid && ingredients.controls[i]['controls']['quantite'].touched">
-                                        
-                                        <input type="text" class="form-control-plaintext input-unite ml-1" formControlName="unite">
+                                        <input type="number" id="quantite" class="form-control col mr-1" step="5"
+                                            formControlName="quantite" required
+                                            [class.is-invalid]="ingredients.controls[i]['controls']['quantite'].invalid && ingredients.controls[i]['controls']['quantite'].touched">
+
+                                        <input type="text" class="form-control-plaintext input-unite ml-1"
+                                            formControlName="unite">
 
                                         <button (click)="supprIngredient(i)" class="btn text-warning supprLigne">
                                             <span aria-hidden="true">&times;</span>
@@ -34,7 +41,8 @@
                                     </div>
                                 </div>
 
-                                <button (click)="addIngredient()" type="button" class="btn btn-block btn-outline-primary">+</button>
+                                <button (click)="addIngredient()" type="button"
+                                    class="btn btn-block btn-outline-primary">+</button>
                             </div>
 
 
@@ -44,7 +52,7 @@
 
 
                 <!-- Ustensiles -->
-                <div class="col-md-12 mb-5">
+                <div class="col-md-12 mb-4">
                     <div class="card bg-secondary">
                         <div class="card-header">
                             <h2>Ustensiles</h2>
@@ -56,9 +64,10 @@
                                 <div *ngFor="let ustensile of ustensiles.controls; let i=index">
                                     <div class="form-row mb-3">
                                         <select class="form-control col mr-1" [formControlName]="i" required
-                                        [class.is-invalid]="ustensiles.controls[i].invalid && ustensiles.controls[i].touched">
+                                            [class.is-invalid]="ustensiles.controls[i].invalid && ustensiles.controls[i].touched">
                                             <option disabled></option>
-                                            <option *ngFor="let ust of listeUstensiles" value={{ust.id}}>{{ ust.nom }}</option>
+                                            <option *ngFor="let ust of listeUstensiles" value={{ust.id}}>{{ ust.nom }}
+                                            </option>
                                         </select>
                                         <button (click)="supprUstensile(i)" class="btn text-warning supprLigne">
                                             <span aria-hidden="true">&times;</span>
@@ -66,7 +75,8 @@
                                     </div>
                                 </div>
 
-                                <button (click)="addUstensiles()" type="button" class="btn btn-block btn-outline-primary">+</button>
+                                <button (click)="addUstensiles()" type="button"
+                                    class="btn btn-block btn-outline-primary">+</button>
                             </div>
 
 
@@ -75,38 +85,11 @@
                 </div>
 
 
-                <!-- Ajouter ingrédient/ustensile manquant en BDD -->
-                <!-- <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
-                    aria-expanded="false" aria-controls="collapseExample">
-                    Créer ingrédient / ustensile manquant
-                </button>
-
-                <div class="collapse col-md-12" id="collapseExample">
-
-                    <div class=" mb-5">
-                        <div class="card bg-secondary">
-                            <div class="card-header">
-                                <h2>Ingrédient</h2>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class=" mb-5">
-                        <div class="card bg-secondary">
-                            <div class="card-header">
-                                <h2>Ustensile</h2>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div> -->
+                <!-- AJOUT NOUVEAUX -->
+                <app-creation-ingr-ust [listeIngredients]="listeIngredients" [listeUstensiles]="listeUstensiles" (ajoutEvent)="getIngrUst()" class="col-md-12 no-gutters"></app-creation-ingr-ust>
 
             </div>
         </div>
-
-
 
 
         <!-- Recette -->
@@ -118,27 +101,32 @@
 
                         <div class="col-md-3 mb-4">
                             <div class="custom-file">
-                                <input (change)="onFileSelect($event)" type="file" class="custom-file-input" id="customFile">
+                                <input (change)="onFileSelect($event)" type="file" class="custom-file-input"
+                                    id="customFile">
                                 <label class="custom-file-label" for="customFile">Choose file</label>
                             </div>
                             <img src="{{apercuPhoto}}" alt="">
                         </div>
 
                         <div class="col-md">
-                            <input type="text" class="form-control mb-4" placeholder="Titre" formControlName="titre" required
-                            [class.is-invalid] = "recetteForm.controls.titre.invalid && recetteForm.controls.titre.touched">
-                            
+                            <input type="text" class="form-control mb-4" placeholder="Titre" formControlName="titre"
+                                required
+                                [class.is-invalid]="recetteForm.controls.titre.invalid && recetteForm.controls.titre.touched">
+
                             <div class="row align-items-center mt-1">
                                 <div class="col-md mb-4">
                                     <div class="form-row mb-2">
                                         <label for="tmpPrepa" class="col-md-4">Préparation : </label>
-                                        <input type="time" class="form-control col" id="tmpPrepa" formControlName="tempsPreparation" required
-                                        [class.is-invalid] = "recetteForm.controls.tempsPreparation.invalid && recetteForm.controls.tempsPreparation.touched">
+                                        <input type="time" class="form-control col" id="tmpPrepa"
+                                            formControlName="tempsPreparation" required
+                                            [class.is-invalid]="recetteForm.controls.tempsPreparation.invalid && recetteForm.controls.tempsPreparation.touched">
                                     </div>
                                     <div class="form-row">
                                         <label for="tmpCuis" class="col-md-4">Cuisson : </label>
-                                        <input type="time" class="form-control col" id="tmpCuis" formControlName="tempsCuisson">
-                                        <input type="number" class="form-control col" id="temperature" step="10" formControlName="temperatureCuisson">
+                                        <input type="time" class="form-control col" id="tmpCuis"
+                                            formControlName="tempsCuisson">
+                                        <input type="number" class="form-control col" id="temperature" step="10"
+                                            formControlName="temperatureCuisson">
                                         <label for="temperature">°c</label>
                                     </div>
                                 </div>
@@ -148,22 +136,26 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-check">
-                                                <input type="radio" class="form-check-input" name="sucre" id="sucre1" value="1" formControlName="sucre">
+                                                <input type="radio" class="form-check-input" name="sucre" id="sucre1"
+                                                    value="1" formControlName="sucre">
                                                 <label class="form-check-label" for="sucre1">Sucré</label>
                                             </div>
                                             <div class="form-check">
-                                                <input type="radio" class="form-check-input" name="sucre" id="sucre0" value="0" formControlName="sucre">
+                                                <input type="radio" class="form-check-input" name="sucre" id="sucre0"
+                                                    value="0" formControlName="sucre">
                                                 <label class="form-check-label" for="sucre0">Salé</label>
                                             </div>
                                         </div>
 
                                         <div class="col">
                                             <div class="form-check">
-                                                <input type="radio" class="form-check-input" name="chaud" id="chaud1" value="1" formControlName="chaud">
+                                                <input type="radio" class="form-check-input" name="chaud" id="chaud1"
+                                                    value="1" formControlName="chaud">
                                                 <label class="form-check-label" for="chaud1">Chaud</label>
                                             </div>
                                             <div class="form-check">
-                                                <input type="radio" class="form-check-input" name="chaud" id="chaud0" value="0" formControlName="chaud">
+                                                <input type="radio" class="form-check-input" name="chaud" id="chaud0"
+                                                    value="0" formControlName="chaud">
                                                 <label class="form-check-label" for="chaud0">Froid</label>
                                             </div>
                                         </div>
@@ -179,10 +171,12 @@
 
                     <div formArrayName="etapes">
                         <div *ngFor="let etape of etapes.controls; let i=index">
-                            <label for="etape{{i}}"><h3>Etape {{ i+1 }}</h3></label>
+                            <label for="etape{{i}}">
+                                <h3>Etape {{ i+1 }}</h3>
+                            </label>
                             <div class="form-row mb-3">
                                 <textarea id="etape{{i}}" class="form-control col mr-3" [formControlName]="i" required
-                                [class.is-invalid]="etapes.controls[i].invalid && etapes.controls[i].touched"></textarea>
+                                    [class.is-invalid]="etapes.controls[i].invalid && etapes.controls[i].touched"></textarea>
                                 <button (click)="supprEtape(i)" type="button" class="btn text-warning supprLigne">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -191,7 +185,7 @@
                     </div>
 
                     <button (click)="addEtape()" type="button" class="btn btn-block btn-outline-primary">+</button>
-                    
+
                 </div>
 
 
@@ -199,9 +193,12 @@
         </div>
 
     </div>
+
     <!-- [disabled]="!recetteForm.valid" -->
     <div class="row">
-        <button type="submit" [disabled]="!recetteForm.valid" class="btn btn-primary  btn-lg btn-block  offset-md-2 col-md-8   mt-5 ">Valider</button>
+        <button type="submit" [disabled]="!recetteForm.valid"
+            class="btn btn-primary  btn-lg btn-block  offset-md-2 col-md-8   mt-5 ">Valider</button>
     </div>
 
 </form>
+
