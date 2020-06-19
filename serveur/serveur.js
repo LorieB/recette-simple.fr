@@ -5,8 +5,8 @@ const cors = require("cors");
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:4200"
-  // origin: ["http://recette-simple-fr.mon.world", "https://recette-simple-fr.mon.world"]
+  // origin: "http://localhost:4200"
+  origin: ["http://recette-simple-fr.mon.world", "https://recette-simple-fr.mon.world"]
 };
 
 app.use(cors(corsOptions));
@@ -25,8 +25,9 @@ app.get("/", (req, res) => {
 
 // routes
 require('./app/routes/auth.routes')(app);
-require('./app/routes/user.routes')(app);
+// require('./app/routes/user.routes')(app);
 require('./app/routes/recette.routes')(app, express);
+require('./app/routes/recherche.routes')(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

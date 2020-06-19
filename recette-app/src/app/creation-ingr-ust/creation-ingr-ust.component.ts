@@ -3,6 +3,7 @@ import { FormBuilder, FormArray, FormGroup, Validators, FormControl } from '@ang
 import { RecetteService } from '../_services/recette.service';
 import { ToasterService } from '../_services/toaster.service';
 import { alreadyExistValidator } from '../_validators/custom.validators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-creation-ingr-ust',
@@ -10,6 +11,7 @@ import { alreadyExistValidator } from '../_validators/custom.validators';
   styleUrls: ['./creation-ingr-ust.component.scss']
 })
 export class CreationIngrUstComponent implements OnInit {
+  private subscription: Subscription = new Subscription();
 
   @Input() listeIngredients: { id: number, nom: string, unite: string }[];
   @Input() listeUstensiles: { id: number, nom: string }[];
@@ -69,12 +71,11 @@ export class CreationIngrUstComponent implements OnInit {
   }
 
   onSubmitIngredient(): void {    
-    this.recetteService.ajoutIngredient(this.newIngredientForm.value).subscribe(response => {
-      console.log(response);
+    this.subscription.add(this.recetteService.ajoutIngredient(this.newIngredientForm.value).subscribe(response => {
       this.supprAllNewIngredient();
       this.ajoutEvent.emit();
       this.toasterService.show('success', response.msg);
-    })
+    }));
   }
 
 
@@ -102,11 +103,15 @@ export class CreationIngrUstComponent implements OnInit {
   }
 
   onSubmitUstensile(): void {
-    this.recetteService.ajoutUstensile(this.newUstensileForm.value).subscribe(response => {
-      console.log(response);
+    this.subscription.add(this.recetteService.ajoutUstensile(this.newUstensileForm.value).subscribe(response => {
       this.supprAllNewUstensile();
       this.ajoutEvent.emit();
       this.toasterService.show('success', response.msg);
-    })
+    }));
+  }
+
+  
+  ngOnDestroy(){
+    this.subscription.unsubscribe();
   }
 }

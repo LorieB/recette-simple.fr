@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Recette } from '../share/recette';
 import { RecetteService } from '../_services/recette.service';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -10,6 +11,8 @@ import { RecetteService } from '../_services/recette.service';
   styleUrls: ['./accueil.component.scss']
 })
 export class AccueilComponent implements OnInit {
+  
+  private subscription: Subscription
 
   listeRecettes = new Array<Recette>();
 
@@ -23,8 +26,7 @@ export class AccueilComponent implements OnInit {
 
 
   getRecettes(): void {
-    this.recetteService.getRecettes().subscribe(recettes => {
-      console.log(recettes);
+    this.subscription = this.recetteService.getRecettes().subscribe(recettes => {
       this.listeRecettes = recettes;
     });
   }
@@ -41,5 +43,9 @@ export class AccueilComponent implements OnInit {
     });
   }
 
+
+  ngOnDestroy(){
+    this.subscription.unsubscribe();
+  }
 
 }

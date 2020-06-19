@@ -5,6 +5,7 @@ import { Recette } from '../share/recette';
 import { RecetteService } from '../_services/recette.service';
 
 import { environment } from '../../environments/environment'
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-recette',
@@ -13,7 +14,8 @@ import { environment } from '../../environments/environment'
 })
 export class RecetteComponent implements OnInit {
 
-  // recette: Recette;
+  private subscription: Subscription
+
   recette: Recette = {
     id: null, 
     titre: null, 
@@ -41,10 +43,12 @@ export class RecetteComponent implements OnInit {
 
   getRecette(): void {
     const titre = this.route.snapshot.paramMap.get('titre');
-    this.recetteService.getRecette(titre).subscribe(recette => {
-      console.log(recette);
+    this.subscription = this.recetteService.getRecette(titre).subscribe(recette => {
       this.recette = recette;
     });
   }
 
+  ngOnDestroy(){
+    this.subscription.unsubscribe();
+  }
 }

@@ -18,8 +18,6 @@ exports.getRecettes = (req, res) => {
     (err, rows) => {
       if (err) throw err;
 
-      // console.log(rows);
-
       res.status(200).send(rows);
     });
 }
@@ -47,7 +45,6 @@ exports.getRecetteByTitre = (req, res) => {
       tmp = rows[0].tempsPreparation.split(':');
       rows[0].tempsPreparation = { hours: +tmp[0], minutes: +tmp[1] };
 
-      //A VERIFIER
       if (rows[0].tempsCuisson) {
         tmp = rows[0].tempsCuisson.split(':');
         rows[0].tempsCuisson = { hours: +tmp[0], minutes: +tmp[1] };
@@ -64,9 +61,6 @@ exports.getRecetteByTitre = (req, res) => {
 
 exports.ajouterRecette = (req, res) => {
 
-  console.log('body');
-  console.log(req.body);
-
   //Vérifie la présence d'ingrédients 
   if (req.body.ingredients.length == 0) {
     res.status(400).send('Ingrédients manquant');
@@ -76,18 +70,15 @@ exports.ajouterRecette = (req, res) => {
     res.status(400).send('Ustensiles manquant');
   }
   else {
-    //Si absence de photo met celle par défaut
+    //Si absence de photo met celle par défaut selon si sucré ou salé
     if(req.body.photo == ''){
-      req.body.photo = 'spaguetti.png';
+      req.body.photo = req.body.sucre ? 'cake.png' : 'spaguetti.png';
     }
     //transforme le tableau d'étapes en une string d'instructions
     instructions = '';
     for (let i = 0; i < req.body.etapes.length; i++) {
       instructions += `<h3>Etape ${i + 1}</h3>${req.body.etapes[i]}<br><br>`;
     }
-
-    console.log("blablablabla");
-    console.log(req.body);
 
     //Echappe \ puis '
     req.body.titre = req.body.titre.replace(/\\/g, '\\\\');
@@ -120,12 +111,10 @@ exports.ajouterRecette = (req, res) => {
     requette = requette.slice(0, requette.length - 1);
     requette += `; `;
 
-    console.log(requette);
 
     sql.query(requette,
       (err, rows) => {
         if (err) throw err;
-        console.log(rows);
 
         res.status(200).send({msg: 'recette crée !'});
       });
@@ -137,13 +126,11 @@ exports.upload = (req, res) => {
 
   req.pipe(req.busboy);
   req.busboy.on('file', function (fieldname, file, filename) {
-    console.log("Uploading: " + filename);
 
     //Path where image will be uploaded
     fstream = fs.createWriteStream(pathPh.pathPhoto + filename);
     file.pipe(fstream);
     fstream.on('close', function () {
-      console.log("Upload Finished of " + filename);
       res.status(200).send({msg: 'Upload réussi'});
     });
   });
@@ -180,7 +167,6 @@ exports.ajoutIngredient = (req, res) => {
   });
   requette = requette.slice(0, requette.length -1);
 
-  console.log(requette);
 
   sql.query(requette,
     (err, rows) => {
@@ -202,7 +188,6 @@ exports.ajoutUstensile = (req, res) => {
   });
   requette = requette.slice(0, requette.length -1);
 
-  console.log(requette);
 
   sql.query(requette,
     (err, rows) => {

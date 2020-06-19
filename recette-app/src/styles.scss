@@ -33,6 +33,22 @@ $theme-colors: (
 }
 
 
+.dropdown-item{
+    color: theme-color("light");
+    img {
+        width: 2em;
+    }
+    &:hover{
+        background-color: darken($color: theme-color("secondary"), $amount: 10);
+        color: theme-color("light");
+    }
+    &:active{
+        background-color: darken($color: theme-color("secondary"), $amount: 20);
+        color: theme-color("light");
+    }
+}
+
+
 img {
     width: inherit;
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
 import { TokenStorageService } from '../_services/token-storage.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -8,6 +9,8 @@ import { TokenStorageService } from '../_services/token-storage.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  private subscription: Subscription;
+  
   form: any = {};
   isLoggedIn = false;
   isLoginFailed = false;
@@ -27,8 +30,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form);
-    this.authService.login(this.form).subscribe(
+    this.subscription = this.authService.login(this.form).subscribe(
       data => {
         this.tokenStorage.saveToken(data.accessToken);
         this.tokenStorage.saveUser(data);
@@ -47,5 +49,11 @@ export class LoginComponent implements OnInit {
 
   reloadPage() {
     window.location.reload();
+  }
+
+  ngOnDestroy(){
+    if(this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

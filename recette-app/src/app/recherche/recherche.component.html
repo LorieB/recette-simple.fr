@@ -1,0 +1,130 @@
+<div class="row justify-content-center">
+    <h1>Recherche</h1>
+</div>
+
+
+
+<form [formGroup]="formRecherche" (ngSubmit)="recherche()">
+    <div class="form-row justify-content-center">
+        <label class="sr-only" for="optAvance">Option avancé</label>
+        <button class="btn btn-lg btn-outline-primary dropdown-toggle   col-sm-2 col-md-1   mr-sm-2" type="button" id="optAvance"
+            data-toggle="collapse" data-target="#collapseForm" aria-expanded="false"
+            aria-controls="collapseForm"></button>
+
+        <label class="sr-only" for="rechercheNom">Nom ou ingredient</label>
+        <input class="form-control form-control-lg    col col-md-6    mr-sm-2 my-2 my-sm-0" type="search" name="nom" id="rechercheNom"
+            placeholder="Titre, ingredient..." aria-label="Recherche" formControlName="nom">
+
+        <button class="btn btn-lg btn-outline-success   col-sm-2 col-md-1" type="submit">Ok</button>
+    </div>
+
+
+    <div class="collapse" id="collapseForm">
+        <div class="row align-items-center ">
+        <!-- <div class="row align-items-center " formGroupName="avance"> -->
+            <div class="col-md mb-4" formGroupName="categorie">
+                <fieldset class="border border-primary rounded p-3">
+                    <legend>Categorie</legend>
+                    <div class="row">
+                        <div class="col">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="sucre" id="sucre1" value="1"
+                                    formControlName="sucre" (click)="deselect($event)">
+                                <label class="custom-control-label" for="sucre1">Sucré</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="sucre" id="sucre0" value="0"
+                                    formControlName="sucre" (click)="deselect($event)">
+                                <label class="custom-control-label" for="sucre0">Salé</label>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="chaud" id="chaud1" value="1"
+                                    formControlName="chaud" (click)="deselect($event)">
+                                <label class="custom-control-label" for="chaud1">Chaud</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="chaud" id="chaud0" value="0"
+                                    formControlName="chaud" (click)="deselect($event)">
+                                <label class="custom-control-label" for="chaud0">Froid</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="col-md mb-4" formGroupName="temps">
+                <fieldset class="border border-primary rounded p-3">
+                    <legend>Temps</legend>
+                    <div class="row">
+                        <div class="col">
+                            <label for="tmpTotal" class="">Total : </label>
+                            <input type="time" class="form-control col" id="tmpTotal" formControlName="tempsTotal">
+                        </div>
+                        <div class="col">
+                            <label for="tmpPrepa" class="">Préparation : </label>
+                            <input type="time" class="form-control col" id="tmpPrepa"
+                                formControlName="tempsPreparation">
+                        </div>
+                        <div class="col">
+                            <label for="tmpCuis" class="">Cuisson : </label>
+                            <input type="time" class="form-control col" id="tmpCuis" formControlName="tempsCuisson">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+        </div>
+    </div>
+
+</form>
+
+
+
+<div class="mt-4">
+    <app-toaster-container></app-toaster-container>
+</div>
+
+
+<div class="row row-cols-1 row-cols-lg-2 mt-4">
+
+    <div *ngFor="let recette of recettes" class="col mb-3 px-3 mb-xl-5 px-xl-5">
+
+        <div class="card h-100 bg-secondary">
+            <div class="row no-gutters position-relative h-100">
+                <div class="col-md-4">
+                    <img class="apercuPlat" src="{{ cheminImage }}{{ recette.photo }}" alt="photo du plat">
+                </div>
+                <div class="col-md-8 position-static">
+                    <div class="card-body h-100 d-flex align-items-start flex-column bd-highlight">
+                        <h4 class="card-title  mx-auto ">{{ recette.titre }}</h4>
+                        <div class="row my-auto w-100 justify-content-between">
+                            <div *ngIf="recette.tempsPreparation.hours != 0 || recette.tempsPreparation.minutes != 0" class="col">
+                                <span>
+                                    <img src="../../assets/icon/dice.png" alt="Préparation" class="mr-2">
+                                    <span *ngIf="recette.tempsPreparation.hours != 0">{{ recette.tempsPreparation.hours }} h </span> 
+                                    <span *ngIf="recette.tempsPreparation.minutes != 0">{{ recette.tempsPreparation.minutes }} min</span>
+                                </span>
+                            </div>
+
+                            <div *ngIf="recette.tempsCuisson.hours != 0 || recette.tempsCuisson.minutes != 0" class="col">
+                                <span>
+                                    <img src="../../assets/icon/timer.png" alt="Cuisson" class="mr-2">
+                                    <span *ngIf="recette.tempsCuisson.hours != 0">{{ recette.tempsCuisson.hours }} h </span>
+                                    <span *ngIf="recette.tempsCuisson.minutes != 0">{{ recette.tempsCuisson.minutes }} min </span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mt-auto ml-auto">
+                            <a routerLink="/recette/{{ recette.titre }}" class="stretched-link">Voir</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

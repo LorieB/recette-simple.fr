@@ -1,0 +1,20 @@
+fieldset{
+    min-height: 9.5em;
+}
+legend {
+    width: auto;
+    padding: 0 0.5em;
+}
+
+input {
+    &[type=time]{
+        width: auto;
+    }
+}
+
+
+
+.apercuPlat {
+    object-fit: cover;
+    height: 100%;
+}

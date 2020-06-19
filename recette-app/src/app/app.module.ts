@@ -18,6 +18,8 @@ import { ToasterComponent } from './_toaster/toaster.component';
 import { authInterceptorProviders } from './_helpers/auth.interceptor';
 import { LoginComponent } from './login/login.component';
 import { CreationIngrUstComponent } from './creation-ingr-ust/creation-ingr-ust.component';
+import { RechercheComponent } from './recherche/recherche.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { CreationIngrUstComponent } from './creation-ingr-ust/creation-ingr-ust.
     LoginComponent,
     CreationIngrUstComponent,
     ToasterContainerComponent,
-    ToasterComponent
+    ToasterComponent,
+    RechercheComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

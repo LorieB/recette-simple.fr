@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormArray, FormGroup, Validators, FormControl } from '@angular/forms';
 import { RecetteService } from '../_services/recette.service';
 import { ToasterService } from '../_services/toaster.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-nouvelle-recette',
@@ -9,10 +10,10 @@ import { ToasterService } from '../_services/toaster.service';
   styleUrls: ['./nouvelle-recette.component.scss']
 })
 export class NouvelleRecetteComponent implements OnInit {
+  private subscription: Subscription = new Subscription();
 
   recetteForm: FormGroup = this.fb.group({
-    // titre: ['', Validators.required, Validators.minLength(3)],
-    titre: ['', Validators.required],
+    titre: ['', [Validators.required, Validators.minLength(3)]],
     photo: '',
 
     chaud: [null, Validators.required],
@@ -52,10 +53,10 @@ export class NouvelleRecetteComponent implements OnInit {
   }
 
   getIngrUst(): void {
-    this.recetteService.getIngrUst().subscribe(liste => {
+    this.subscription.add(this.recetteService.getIngrUst().subscribe(liste => {
       this.listeIngredients = liste.ingredients;
       this.listeUstensiles = liste.ustensiles;
-    })
+    }))
   }
 
 
@@ -127,18 +128,18 @@ export class NouvelleRecetteComponent implements OnInit {
 
 
   onSubmit(): void {
-    console.log(this.recetteForm.value);
 
-    this.recetteService.ajouterRecette(this.recetteForm.value).subscribe(response => {
-      console.log('Response ajout recette');
-      console.log(response);
+    this.subscription.add(this.recetteService.ajouterRecette(this.recetteForm.value).subscribe(response => {
       this.toasterService.show('success', response.msg);
-    });
+    }));
 
-    this.recetteService.uploadPhoto(this.formData).subscribe(response => {
-      console.log('Response upload image');
-      console.log(response);
+    this.subscription.add(this.recetteService.uploadPhoto(this.formData).subscribe(response => {
       this.toasterService.show('success', response.msg);
-    });
+    }));
+  }
+
+
+  ngOnDestroy(){
+    this.subscription.unsubscribe();
   }
 }
