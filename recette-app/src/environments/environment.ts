@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  siteUrl: 'http://localhost:4200/#/',
   serverUrl: 'http://localhost:8080/api/',
   cheminImage: '../assets/photos/'
 };

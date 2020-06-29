@@ -13,6 +13,8 @@ export interface Recette {
 
     instructions: string,
 
-    ingredients: {nom: string, unite: string, quantite: number}[],
-    ustensiles: string[]
+    ingredients: {id: number, nom: string, unite: string, quantite: number}[],
+    ustensiles: {id: number, nom: string}[],
+
+    id_user: number
 }

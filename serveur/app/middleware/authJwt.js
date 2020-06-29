@@ -22,6 +22,7 @@ verifyToken = (req, res, next) => {
 };
 
 
+
 isAdmin = (req, res, next) => {
   sql.query(`SELECT * FROM users 
   INNER JOIN user_roles ON users.id = user_roles.userId

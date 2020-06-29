@@ -1,8 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormArray, FormGroup, Validators, FormControl } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { RecetteService } from '../_services/recette.service';
 import { ToasterService } from '../_services/toaster.service';
+import { TokenStorageService } from '../_services/token-storage.service'
 import { Subscription } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { Recette } from '../share/recette';
+import { Time } from '@angular/common';
 
 @Component({
   selector: 'app-nouvelle-recette',
@@ -12,7 +17,19 @@ import { Subscription } from 'rxjs';
 export class NouvelleRecetteComponent implements OnInit {
   private subscription: Subscription = new Subscription();
 
+  @Input() recetteEdit;
+  @Output() eventAnnuler = new EventEmitter<void>();
+
+
+  apercuPhoto: string;
+  formData = new FormData();
+
+  listeIngredients: { id: number, nom: string, unite: string }[];
+  listeUstensiles: { id: number, nom: string }[];
+
+
   recetteForm: FormGroup = this.fb.group({
+    id_user: this.tokenStorage.getUser().id,
     titre: ['', [Validators.required, Validators.minLength(3)]],
     photo: '',
 
@@ -24,33 +41,33 @@ export class NouvelleRecetteComponent implements OnInit {
 
     ingredients: this.fb.array([
       this.createItemIngredient()
-    ]),
+    ], Validators.required),
 
     ustensiles: this.fb.array([
       this.fb.control(null, Validators.required)
-    ]),
+    ], Validators.required),
 
     etapes: this.fb.array([
       this.fb.control('', [Validators.required, Validators.minLength(10)])
-    ]),
+    ], Validators.required),
+
   });
-
-  apercuPhoto: string;
-  formData = new FormData();
-
-  listeIngredients: { id: number, nom: string, unite: string }[];
-  listeUstensiles: { id: number, nom: string }[];
-
 
   constructor(
     public fb: FormBuilder,
     public recetteService: RecetteService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private tokenStorage: TokenStorageService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.getIngrUst();
+    if (this.recetteEdit) {
+      this.remplirForm();
+    }
   }
+
 
   getIngrUst(): void {
     this.subscription.add(this.recetteService.getIngrUst().subscribe(liste => {
@@ -58,6 +75,66 @@ export class NouvelleRecetteComponent implements OnInit {
       this.listeUstensiles = liste.ustensiles;
     }))
   }
+
+
+
+
+  annulerEdit(): void {
+    this.eventAnnuler.emit();
+  }
+
+  //Rempli le formulaire avec la recette qui est passé en input
+  remplirForm(): void {
+    this.recetteForm.addControl('id', this.fb.control(this.recetteEdit.id))
+
+    this.recetteForm.patchValue({
+      id_user: this.recetteEdit.id_user,
+      titre: this.recetteEdit.titre,
+      photo: this.recetteEdit.photo,
+
+      chaud: this.recetteEdit.chaud.toString(),
+      sucre: this.recetteEdit.sucre.toString(),
+      tempsPreparation: this.formatTime(this.recetteEdit.tempsPreparation),
+      tempsCuisson: this.formatTime(this.recetteEdit.tempsCuisson),
+      temperatureCuisson: this.recetteEdit.temperatureCuisson,
+    })
+
+    this.apercuPhoto = environment.cheminImage + this.recetteEdit.photo;
+
+    this.ingredients.clear();
+    for (let i = 0; i < this.recetteEdit.ingredients.length; i++) {
+      this.addIngredient();
+      this.ingredients.at(i).patchValue(this.recetteEdit.ingredients[i]);
+    }
+    this.ustensiles.clear();
+    for (let i = 0; i < this.recetteEdit.ustensiles.length; i++) {
+      this.addUstensiles();
+      this.ustensiles.at(i).patchValue(this.recetteEdit.ustensiles[i].id);
+    }
+
+    let etapes = this.recetteEdit.instructions.replaceAll('<br>', '');
+    etapes = etapes.split(/<h[0-9]>Etape [0-9]*<\/h[0-9]>/);
+    etapes.shift();
+
+    this.supprEtape(0);
+    for (let i = 0; i < etapes.length; i++) {
+      this.addEtape();
+      this.etapes.at(i).patchValue(etapes[i]);
+    }
+  }
+
+  formatTime(time: Time): string {
+    //Formate l'heure pour les input type time
+    let res = (time.hours < 10) ? '0' + time.hours.toString() : time.hours.toString();
+    res += ':';
+    res += (time.minutes < 10) ? '0' + time.minutes.toString() : time.minutes.toString();
+
+    return res;
+  }
+
+
+
+
 
 
   //Ingrédients
@@ -76,6 +153,7 @@ export class NouvelleRecetteComponent implements OnInit {
   }
   supprIngredient(i: number) {
     this.ingredients.removeAt(i);
+    this.ingredients.markAsDirty();
   }
   onIngrSelect(event, i) {
     //Récupère l'unité de mesure de l'ingrédient dans le dataset de select => option et met sa valeur dans le champ unite de l'ingrédient qui à été sélectionné
@@ -92,6 +170,7 @@ export class NouvelleRecetteComponent implements OnInit {
   }
   supprUstensile(i: number) {
     this.ustensiles.removeAt(i);
+    this.ustensiles.markAsDirty();
   }
 
 
@@ -127,19 +206,70 @@ export class NouvelleRecetteComponent implements OnInit {
   }
 
 
+
   onSubmit(): void {
+    //Modification reccette
+    if (this.recetteEdit) {
+      //Remplace liste par 'pristine' pour indiquer absence de modification
+      if (this.ingredients.pristine) this.recetteForm.setControl('ingredients', this.fb.control('pristine'));
+      if (this.ustensiles.pristine) this.recetteForm.setControl('ustensiles', this.fb.control('pristine'));
 
-    this.subscription.add(this.recetteService.ajouterRecette(this.recetteForm.value).subscribe(response => {
-      this.toasterService.show('success', response.msg);
-    }));
+      //Photo changée
+      if (this.recetteEdit.photo != this.recetteForm.get('photo').value) {
+        //Si photo précédente non celle par defaut -> suppression
+        if (!(this.recetteEdit.photo == 'spaguetti.png' || this.recetteEdit.photo == 'cake.png')) {
+          this.subscription.add(this.recetteService.supprPhoto({ nom: this.recetteEdit.photo, id: this.recetteEdit.id }).subscribe(response => {
+            this.toasterService.show('success', response.msg);
+          }));
+        }
+        //Upload photo
+        this.subscription.add(this.recetteService.uploadPhoto(this.formData).subscribe(response => {
+          this.toasterService.show('success', response.msg);
+        }));
+      }
 
-    this.subscription.add(this.recetteService.uploadPhoto(this.formData).subscribe(response => {
+      //Modif recette
+      this.subscription.add(this.recetteService.modifierRecette(this.recetteForm.value).subscribe(response => {
+        this.toasterService.show('success', response.msg);
+        window.location.assign(environment.siteUrl + 'recette/' + this.recetteForm.get('titre').value);
+        window.location.reload();
+      }));
+    }
+    //Création recette
+    else {
+      //Recette
+      this.subscription.add(this.recetteService.ajouterRecette(this.recetteForm.value).subscribe(response => {
+        this.toasterService.show('success', response.msg);
+      }));
+
+      //Photo
+      if (this.recetteForm.get('photo').value != '') {
+        this.subscription.add(this.recetteService.uploadPhoto(this.formData).subscribe(response => {
+          this.toasterService.show('success', response.msg);
+        }));
+      }
+    }
+  }
+
+
+
+  supprimerRecette(): void {
+    //Si photo précédente non celle par defaut -> suppression
+    if (!(this.recetteEdit.photo == 'spaguetti.png' || this.recetteEdit.photo == 'cake.png')) {
+      this.subscription.add(this.recetteService.supprPhoto({ nom: this.recetteEdit.photo, id: this.recetteEdit.id }).subscribe(response => {
+        this.toasterService.show('success', response.msg);
+      }));
+    }
+
+    this.subscription.add(this.recetteService.supprRecette(this.recetteEdit).subscribe(response => {
       this.toasterService.show('success', response.msg);
+      window.location.assign(environment.siteUrl);
+      window.location.reload();
     }));
   }
 
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 }

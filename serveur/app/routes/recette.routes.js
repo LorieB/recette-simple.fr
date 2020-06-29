@@ -1,4 +1,4 @@
-const { authJwt } = require("../middleware");
+const { authJwt, verifRecette } = require("../middleware");
 const controller = require("../controllers/recette.controller");
 
 const pathPh = require("../config/path.config");
@@ -25,9 +25,16 @@ module.exports = function(app, express) {
 
   app.get("/api/IngrUst", controller.getIngrUst);
 
-  app.post("/api/ajout-recette", [authJwt.verifyToken], controller.ajouterRecette);
+  app.post("/api/ajout-recette", [authJwt.verifyToken, verifRecette.titreDispo], controller.ajouterRecette);
+
+  app.post("/api/modifier-recette", [authJwt.verifyToken, verifRecette.peutEditer, verifRecette.titreDispo], controller.modifierRecette);
+
+  app.post("/api/suppr-recette", [authJwt.verifyToken, verifRecette.peutEditer], controller.supprimerRecette);
+
 
   app.post('/api/upload', [authJwt.verifyToken], controller.upload);
+
+  app.post('/api/suppr-photo', [authJwt.verifyToken, verifRecette.peutEditer], controller.supprPhoto);
 
 
   app.post('/api/ajout-ingredient', [authJwt.verifyToken], controller.ajoutIngredient);

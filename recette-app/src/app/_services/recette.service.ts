@@ -26,9 +26,8 @@ export class RecetteService {
     return (error: any): Observable<T> => {
   
       // TODO: send the error to remote logging infrastructure
-      console.error('error'); // log to console instead
       console.error(error); // log to console instead
-      this.toasterService.show('danger', error);
+      this.toasterService.show('danger', error.error);
   
       // Let the app keep running by returning an empty result.
       return of(result as T);
@@ -63,6 +62,20 @@ export class RecetteService {
     );
   }
 
+  modifierRecette(recette: Recette): Observable<any> {
+    return this.http.post<Recette>(environment.serverUrl+'modifier-recette', recette)
+    .pipe(
+      catchError(this.handleError<any>('modifierRecette'))
+    );
+  }
+
+  supprRecette(recette: Recette): Observable<any> {
+    return this.http.post<Recette>(environment.serverUrl+'suppr-recette', recette)
+    .pipe(
+      catchError(this.handleError<any>('supprRecette'))
+    );
+  }
+
   uploadPhoto(data: FormData): Observable<any> {
     return this.http.post<FormData>(environment.serverUrl+'upload', data)
     .pipe(
@@ -70,7 +83,12 @@ export class RecetteService {
     );
   }
 
-
+  supprPhoto(data: {nom: string, id: number}): Observable<any> {
+    return this.http.post<any>(environment.serverUrl+'suppr-photo', data)
+    .pipe(
+      catchError(this.handleError<string>('supprPhoto'))
+    );
+  }
 
   ajoutIngredient(ingredients: [{nom: string, unite: string}]): Observable<any> {
     return this.http.post<[{nom: string, unite: string}]>(environment.serverUrl+'ajout-ingredient', ingredients)

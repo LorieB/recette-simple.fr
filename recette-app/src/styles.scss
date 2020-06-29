@@ -2,14 +2,20 @@
 
 $theme-colors: (
     "primary": #A3D0FF,
-    "danger": #E74C3C
+    "danger": #E74C3C,
+    "warning": #FFC71F,
+    "success": #8CE3A2
 );
 
 
 @import "../node_modules/bootstrap/scss/bootstrap";
 
 
+.menu, .footer {
+    background-color: darken($color: theme-color("secondary"), $amount: 10);
+}
 
+//page astuce
 .nav-tabs{
     border-bottom: 1px solid gray("600");
 
@@ -24,11 +30,14 @@ $theme-colors: (
     }
 }
 
+//ok
 .bg-secondary {
-    .card-body, .list-group-item-secondary {
-        color: theme-color("light");
-        // color: #d6d8db;
-        background-color: lighten($color: theme-color("secondary"), $amount: 15);
+    .card-header {
+        background-color: darken($color: theme-color("secondary"), $amount: 10);
+    }
+    .list-group-item-secondary {
+        color: #fff;
+        background-color: theme-color("secondary");
     }
 }
 

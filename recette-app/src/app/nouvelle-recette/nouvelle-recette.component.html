@@ -1,6 +1,5 @@
 <app-toaster-container></app-toaster-container>
 
-
 <form [formGroup]="recetteForm" (ngSubmit)="onSubmit()">
     <div class="row">
         <div class="col-lg-3">
@@ -19,23 +18,27 @@
                                 <div *ngFor="let ingredient of ingredients.controls; let i=index">
                                     <div class="form-row mb-3" [formGroupName]="i">
 
+                                        <label for="ingredient{{i}}" class="sr-only">Ingrédient</label>
                                         <select (change)="onIngrSelect($event, i)" class="form-control col-5 mr-2"
-                                            formControlName="id" required
+                                            id="ingredient{{i}}" formControlName="id" required 
                                             [class.is-invalid]="ingredients.controls[i]['controls']['id'].invalid && ingredients.controls[i]['controls']['id'].touched">
-                                            <option disabled></option>
                                             <option *ngFor="let ingr of listeIngredients" value="{{ingr.id}}"
                                                 [attr.data-unite]="ingr.unite">{{ ingr.nom }}</option>
                                         </select>
 
-                                        <input type="number" id="quantite" class="form-control col mr-1" step="5"
+                                        <label for="quantite{{i}}" class="sr-only">Quantité</label>
+                                        <input type="number" id="quantite{{i}}" class="form-control col mr-1"
                                             formControlName="quantite" required
                                             [class.is-invalid]="ingredients.controls[i]['controls']['quantite'].invalid && ingredients.controls[i]['controls']['quantite'].touched">
 
-                                        <input type="text" class="form-control-plaintext input-unite ml-1"
-                                            formControlName="unite">
+                                        <label for="unite{{i}}" class="sr-only">Unité de mesure</label>
+                                        <input type="text" class="form-control-plaintext text-white input-unite ml-1"
+                                            id="unite{{i}}" formControlName="unite" readonly>
 
-                                        <button (click)="supprIngredient(i)" class="btn text-warning supprLigne">
+                                        <button (click)="supprIngredient(i)" class="btn text-warning supprLigne"
+                                            type="button">
                                             <span aria-hidden="true">&times;</span>
+                                            <span class="sr-only">Supprimer ingrédient</span>
                                         </button>
 
                                     </div>
@@ -63,14 +66,18 @@
                             <div formArrayName="ustensiles">
                                 <div *ngFor="let ustensile of ustensiles.controls; let i=index">
                                     <div class="form-row mb-3">
-                                        <select class="form-control col mr-1" [formControlName]="i" required
+                                        
+                                        <label for="ustensile{{i}}" class="sr-only">Ustensile</label>
+                                        <select class="form-control col mr-1" [formControlName]="i" id="ustensile{{i}}" required
                                             [class.is-invalid]="ustensiles.controls[i].invalid && ustensiles.controls[i].touched">
-                                            <option disabled></option>
                                             <option *ngFor="let ust of listeUstensiles" value={{ust.id}}>{{ ust.nom }}
                                             </option>
                                         </select>
-                                        <button (click)="supprUstensile(i)" class="btn text-warning supprLigne">
+
+                                        <button (click)="supprUstensile(i)" class="btn text-warning supprLigne"
+                                            type="button">
                                             <span aria-hidden="true">&times;</span>
+                                            <span class="sr-only">Supprimer ustensile</span>
                                         </button>
                                     </div>
                                 </div>
@@ -86,7 +93,8 @@
 
 
                 <!-- AJOUT NOUVEAUX -->
-                <app-creation-ingr-ust [listeIngredients]="listeIngredients" [listeUstensiles]="listeUstensiles" (ajoutEvent)="getIngrUst()" class="col-md-12 no-gutters"></app-creation-ingr-ust>
+                <app-creation-ingr-ust [listeIngredients]="listeIngredients" [listeUstensiles]="listeUstensiles"
+                    (ajoutEvent)="getIngrUst()" class="col-md-12 no-gutters"></app-creation-ingr-ust>
 
             </div>
         </div>
@@ -97,6 +105,8 @@
             <div class="card bg-secondary">
 
                 <div class="card-header form-group">
+                    <button *ngIf="recetteEdit" (click)="annulerEdit()" class="btn float-right" type="button"><img
+                            src="../../assets/icon/cancel.png" alt="annuler"></button>
                     <div class="row align-items-center">
 
                         <div class="col-md-3 mb-4">
@@ -109,7 +119,8 @@
                         </div>
 
                         <div class="col-md">
-                            <input type="text" class="form-control mb-4" placeholder="Titre" formControlName="titre"
+                            <label class="sr-only" for="titre">Titre</label>
+                            <input type="text" class="form-control mb-4" placeholder="Titre" formControlName="titre" id="titre"
                                 required
                                 [class.is-invalid]="recetteForm.controls.titre.invalid && recetteForm.controls.titre.touched">
 
@@ -135,28 +146,29 @@
                                     <legend>Categorie</legend>
                                     <div class="row">
                                         <div class="col">
-                                            <div class="form-check">
-                                                <input type="radio" class="form-check-input" name="sucre" id="sucre1"
-                                                    value="1" formControlName="sucre">
-                                                <label class="form-check-label" for="sucre1">Sucré</label>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input" name="sucre"
+                                                    id="sucre1" value="1" formControlName="sucre">
+                                                <label class="custom-control-label" for="sucre1">Sucré</label>
                                             </div>
-                                            <div class="form-check">
-                                                <input type="radio" class="form-check-input" name="sucre" id="sucre0"
-                                                    value="0" formControlName="sucre">
-                                                <label class="form-check-label" for="sucre0">Salé</label>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input" name="sucre"
+                                                    id="sucre0" value="0" formControlName="sucre">
+                                                <label class="custom-control-label" for="sucre0">Salé</label>
                                             </div>
+
                                         </div>
 
                                         <div class="col">
-                                            <div class="form-check">
-                                                <input type="radio" class="form-check-input" name="chaud" id="chaud1"
-                                                    value="1" formControlName="chaud">
-                                                <label class="form-check-label" for="chaud1">Chaud</label>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input" name="chaud"
+                                                    id="chaud1" value="1" formControlName="chaud">
+                                                <label class="custom-control-label" for="chaud1">Chaud</label>
                                             </div>
-                                            <div class="form-check">
-                                                <input type="radio" class="form-check-input" name="chaud" id="chaud0"
-                                                    value="0" formControlName="chaud">
-                                                <label class="form-check-label" for="chaud0">Froid</label>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input" name="chaud"
+                                                    id="chaud0" value="0" formControlName="chaud">
+                                                <label class="custom-control-label" for="chaud0">Froid</label>
                                             </div>
                                         </div>
                                     </div>
@@ -179,6 +191,7 @@
                                     [class.is-invalid]="etapes.controls[i].invalid && etapes.controls[i].touched"></textarea>
                                 <button (click)="supprEtape(i)" type="button" class="btn text-warning supprLigne">
                                     <span aria-hidden="true">&times;</span>
+                                    <span class="sr-only">Supprimer étape</span>
                                 </button>
                             </div>
                         </div>
@@ -194,11 +207,35 @@
 
     </div>
 
-    <!-- [disabled]="!recetteForm.valid" -->
     <div class="row">
-        <button type="submit" [disabled]="!recetteForm.valid"
+        <button *ngIf="recetteEdit" type="button" class="btn btn-danger  btn-lg btn-block  col-md-2   mt-5 "
+            data-toggle="modal" data-target="#exampleModal">Supprimer</button>
+
+        <button [disabled]="!recetteForm.valid || recetteForm.pristine" type="submit"
             class="btn btn-primary  btn-lg btn-block  offset-md-2 col-md-8   mt-5 ">Valider</button>
     </div>
 
 </form>
 
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Etes-vous sûr de vouloir supprimer ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                <button (click)="supprimerRecette()" type="button" class="btn btn-danger">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>
